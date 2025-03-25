@@ -11,4 +11,5 @@ class AssetPaths {
   static const String hipercard = 'icons/hipercard.png';
   static const String chip = 'icons/chip.png';
   static const String mir = 'icons/mir.png';
+  static const String troy = 'icons/troy.png';
 }

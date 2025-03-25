@@ -9,6 +9,7 @@ enum CardType {
   elo,
   hipercard,
   mir,
+  troy,
 }
 
 /// The type of floating event.

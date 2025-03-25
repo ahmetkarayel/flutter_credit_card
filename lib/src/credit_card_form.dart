@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../flutter_credit_card.dart';
 import 'masked_text_controller.dart';
 import 'utils/constants.dart';
-import 'utils/helpers.dart';
 import 'utils/typedefs.dart';
 import 'utils/validators.dart';
 
@@ -37,7 +35,6 @@ class CreditCardForm extends StatefulWidget {
     this.cardHolderValidator,
     this.onFormComplete,
     this.disableCardNumberAutoFillHints = false,
-    this.isCardHolderNameUpperCase = false,
     super.key,
   });
 
@@ -137,9 +134,6 @@ class CreditCardForm extends StatefulWidget {
   /// [https://github.com/flutter/flutter/issues/104604](https://github.com/flutter/flutter/issues/104604).
   final bool disableCardNumberAutoFillHints;
 
-  /// When true card holder field will make all the input value to uppercase
-  final bool isCardHolderNameUpperCase;
-
   @override
   State<CreditCardForm> createState() => _CreditCardFormState();
 }
@@ -196,7 +190,6 @@ class _CreditCardFormState extends State<CreditCardForm> {
             visible: widget.isCardNumberVisible,
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
-              margin: const EdgeInsets.only(left: 16, top: 16, right: 16),
               child: TextFormField(
                 key: widget.cardNumberKey,
                 obscureText: widget.obscureNumber,
@@ -220,6 +213,27 @@ class _CreditCardFormState extends State<CreditCardForm> {
               ),
             ),
           ),
+          Visibility(
+            visible: widget.isHolderNameVisible,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              //margin: const EdgeInsets.only(left: 16, top: 8, right: 16),
+              child: TextFormField(
+                key: widget.cardHolderKey,
+                controller: _cardHolderNameController,
+                onChanged: _onCardHolderNameChange,
+                focusNode: cardHolderNode,
+                decoration: widget.inputConfiguration.cardHolderDecoration,
+                style: widget.inputConfiguration.cardHolderTextStyle,
+                keyboardType: TextInputType.text,
+                autovalidateMode: widget.autovalidateMode,
+                textInputAction: TextInputAction.next,
+                autofillHints: const <String>[AutofillHints.creditCardName],
+                onEditingComplete: _onHolderNameEditComplete,
+                validator: widget.cardHolderValidator,
+              ),
+            ),
+          ),
           Row(
             children: <Widget>[
               Visibility(
@@ -227,7 +241,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
                 child: Expanded(
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    margin: const EdgeInsets.only(left: 16, top: 8, right: 16),
+                    //margin: const EdgeInsets.only(left: 16, top: 8, right: 16),
                     child: TextFormField(
                       key: widget.expiryDateKey,
                       controller: _expiryDateController,
@@ -253,12 +267,13 @@ class _CreditCardFormState extends State<CreditCardForm> {
                   ),
                 ),
               ),
+              const SizedBox(width: 16,),
               Expanded(
                 child: Visibility(
                   visible: widget.enableCvv,
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    margin: const EdgeInsets.only(left: 16, top: 8, right: 16),
+                    //margin: const EdgeInsets.only(left: 16, top: 8, right: 16),
                     child: TextFormField(
                       key: widget.cvvCodeKey,
                       obscureText: widget.obscureCvv,
@@ -287,33 +302,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
               ),
             ],
           ),
-          Visibility(
-            visible: widget.isHolderNameVisible,
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              margin: const EdgeInsets.only(left: 16, top: 8, right: 16),
-              child: TextFormField(
-                key: widget.cardHolderKey,
-                controller: _cardHolderNameController,
-                onChanged: _onCardHolderNameChange,
-                focusNode: cardHolderNode,
-                decoration: widget.inputConfiguration.cardHolderDecoration,
-                style: widget.inputConfiguration.cardHolderTextStyle,
-                keyboardType: TextInputType.text,
-                autovalidateMode: widget.autovalidateMode,
-                textInputAction: TextInputAction.done,
-                autofillHints: const <String>[AutofillHints.creditCardName],
-                onEditingComplete: _onHolderNameEditComplete,
-                textCapitalization: widget.isCardHolderNameUpperCase
-                    ? TextCapitalization.characters
-                    : TextCapitalization.none,
-                inputFormatters: widget.isCardHolderNameUpperCase
-                    ? const <TextInputFormatter>[UpperCaseTextFormatter()]
-                    : null,
-                validator: widget.cardHolderValidator,
-              ),
-            ),
-          ),
+
         ],
       ),
     );

@@ -76,6 +76,9 @@ class AppConstants {
   /// first digit of the start range.
   static const Map<int, Map<List<int?>, CardType>> cardNumPatterns =
       <int, Map<List<int?>, CardType>>{
+           9792:{
+      [9792]: CardType.troy,
+    },
     6: <List<int?>, CardType>{
       <int?>[655021, 655058]: CardType.elo,
       <int?>[655000, 655019]: CardType.elo,
@@ -138,5 +141,62 @@ class AppConstants {
     CardType.elo: AssetPaths.elo,
     CardType.hipercard: AssetPaths.hipercard,
     CardType.mir: AssetPaths.mir,
+    CardType.troy: AssetPaths.troy,
   };
+
+  static CardType detectCCType(String cardNumber) {
+  if (cardNumber.isEmpty) {
+    return CardType.otherBrand;
+  }
+
+  // Remove any spaces
+  cardNumber = cardNumber.replaceAll(RegExp(r'\s+\b|\b\s'), '');
+
+  final int firstDigit = int.parse(
+    cardNumber.length <= 1 ? cardNumber : cardNumber.substring(0, 1),
+  );
+
+  final int firstFourDigit = int.parse(
+    cardNumber.length <= 1 ? cardNumber : cardNumber.substring(0, 4),
+  );
+
+  //TROY kart
+  if (cardNumPatterns.containsKey(firstFourDigit)) {
+    return CardType.troy;
+  }
+
+  if (!cardNumPatterns.containsKey(firstDigit)) {
+    return CardType.otherBrand;
+  }
+
+  final Map<List<int?>, CardType> cardNumPatternSubMap =
+      cardNumPatterns[firstDigit]!;
+
+  final int ccPatternNum = int.parse(cardNumber);
+
+  for (final List<int?> range in cardNumPatternSubMap.keys) {
+    int subPatternNum = ccPatternNum;
+
+    if (range.length != 2 || range.first == null) {
+      continue;
+    }
+
+    final int start = range.first!;
+    final int? end = range.last;
+
+    // Adjust the cardNumber prefix as per the length of start prefix range.
+    final int startLen = start.toString().length;
+    if (startLen < cardNumber.length) {
+      subPatternNum = int.parse(cardNumber.substring(0, startLen));
+    }
+
+    if ((end == null && subPatternNum == start) ||
+        ((subPatternNum <= (end ?? -double.maxFinite)) &&
+            subPatternNum >= start)) {
+      return cardNumPatternSubMap[range]!;
+    }
+  }
+
+  return CardType.otherBrand;
+}
 }
