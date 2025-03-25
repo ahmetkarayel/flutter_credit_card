@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/rendering.dart';
 
-import 'asset_paths.dart';
 import 'enumerations.dart';
 
 class AppConstants {
@@ -131,7 +130,7 @@ class AppConstants {
     },
   };
 
-  static const Map<CardType, String> cardTypeIconAsset = <CardType, String>{
+/*    static const Map<CardType, String> cardTypeIconAsset = <CardType, String>{
     CardType.visa: AssetPaths.visa,
     CardType.rupay: AssetPaths.rupay,
     CardType.americanExpress: AssetPaths.americanExpress,
@@ -142,7 +141,7 @@ class AppConstants {
     CardType.hipercard: AssetPaths.hipercard,
     CardType.mir: AssetPaths.mir,
     CardType.troy: AssetPaths.troy,
-  };
+  };  */
 
   static CardType detectCCType(String cardNumber) {
   if (cardNumber.isEmpty) {

@@ -71,14 +71,13 @@ Widget getCardTypeImage({
   return customIcons.firstWhere(
     (CustomCardTypeIcon element) => element.cardType == cardType,
     orElse: () {
-      final bool isKnownCardType =
-          AppConstants.cardTypeIconAsset.containsKey(cardType);
+      final bool isKnownCardType = cardType.isKnownBrand;
 
       return CustomCardTypeIcon(
         cardType: isKnownCardType ? cardType : CardType.otherBrand,
         cardImage: isKnownCardType
             ? Image.asset(
-                AppConstants.cardTypeIconAsset[cardType]!,
+                cardType.assetPath,
                 height: AppConstants.creditCardIconSize,
                 width: AppConstants.creditCardIconSize,
                 package: AppConstants.packageName,
